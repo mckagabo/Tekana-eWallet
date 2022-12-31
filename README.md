@@ -1,17 +1,17 @@
 # Tekana-eWallet
 **Strategy to build from scratch Tekan-eWallet**
 
-Assess the current system: First, I would assess the current system to understand its architecture, technology stack, and any issues or pain points that need to be addressed. This would involve working with the tech team and business team to gather requirements and conduct a technical analysis of the system.
+1.*Assess the current system:* First, I would assess the current system to understand its architecture, technology stack, and any issues or pain points that need to be addressed. This would involve working with the tech team and business team to gather requirements and conduct a technical analysis of the system.
 
-Define the project scope: Next, I would define the scope of the project and create a project plan that outlines the goals, timeline, and resources needed to rebuild the back-end solution. This would involve working with the tech team and business team to prioritize features and functions, and to identify any potential risks or challenges.
+2.*Define the project scope:* Next, I would define the scope of the project and create a project plan that outlines the goals, timeline, and resources needed to rebuild the back-end solution. This would involve working with the tech team and business team to prioritize features and functions, and to identify any potential risks or challenges.
 
-Design the new system: Once the scope of the project has been defined, I would work with the tech team to design the new back-end solution. This would involve creating a technical design document that outlines the architecture, technology stack, and any integration points with other systems.
+3.*Design the new system:* Once the scope of the project has been defined, I would work with the tech team to design the new back-end solution. This would involve creating a technical design document that outlines the architecture, technology stack, and any integration points with other systems.
 
-Build and test the new system: Next, I would work with the tech team to build and test the new back-end solution. This would involve setting up a development and testing environment, and implementing and testing the various components of the system.
+4.*Build and test the new system:* Next, I would work with the tech team to build and test the new back-end solution. This would involve setting up a development and testing environment, and implementing and testing the various components of the system.
 
-Deploy the new system: Once the new back-end solution has been built and tested, I would work with the tech team to deploy it to a staging or pre-production environment. This would involve conducting final tests and performance benchmarks to ensure that the system is ready for production.
+5.*Deploy the new system:* Once the new back-end solution has been built and tested, I would work with the tech team to deploy it to a staging or pre-production environment. This would involve conducting final tests and performance benchmarks to ensure that the system is ready for production.
 
-Go live: Once the new back-end solution has been deployed to a staging environment and tested successfully, I would work with the tech team to roll it out to production. This would involve coordinating with the business team to communicate the change to customers, and to ensure that the transition to the new system is smooth and seamless.
+6.*Go live:* Once the new back-end solution has been deployed to a staging environment and tested successfully, I would work with the tech team to roll it out to production. This would involve coordinating with the business team to communicate the change to customers, and to ensure that the transition to the new system is smooth and seamless.
 
 
 
