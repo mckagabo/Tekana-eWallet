@@ -1,6 +1,6 @@
 # Tekana-eWallet
-**Strategy to build from scratch Tekan-eWallet**
-
+**Strategy to build from scratch Tekana-eWallet**
+Given the scenario presented in the technical evaluations following are my strategies
 1.*Assess the current system:* First, I would assess the current system to understand its architecture, technology stack, and any issues or pain points that need to be addressed. This would involve working with the tech team and business team to gather requirements and conduct a technical analysis of the system.
 
 2.*Define the project scope:* Next, I would define the scope of the project and create a project plan that outlines the goals, timeline, and resources needed to rebuild the back-end solution. This would involve working with the tech team and business team to prioritize features and functions, and to identify any potential risks or challenges.
