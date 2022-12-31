@@ -62,7 +62,7 @@ public class SecurityConfig {
 					 auth.requestMatchers("/","/api/auth/signup").permitAll();
 					 auth.requestMatchers("/","/api/auth/signin").permitAll();
 					// auth.requestMatchers("/","/api/auth/users").permitAll();
-					// auth.requestMatchers("/","/api/payments/send").permitAll();
+					// auth.requestMatchers("/","/api/payments/externalpay").permitAll();
 					 auth.anyRequest().authenticated();
 				 }) 
 		         .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

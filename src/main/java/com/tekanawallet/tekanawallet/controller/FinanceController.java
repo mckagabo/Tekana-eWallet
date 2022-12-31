@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tekanawallet.tekanawallet.dto.ExternalPaymentDto;
 import com.tekanawallet.tekanawallet.dto.PaymentDto;
 import com.tekanawallet.tekanawallet.dto.UserDto;
 import com.tekanawallet.tekanawallet.payments.service.PaymentService;
@@ -40,8 +41,8 @@ public class FinanceController {
 		Transaction cashOutransaction=new Transaction();
 		Transaction cashInTransaction=new Transaction();
 		
-		User sender=userRepository.findByEmail(payment.getSender());
-		User reciever=userRepository.findByEmail(payment.getReceiver());
+		User sender=userRepository.findByUserAccount(payment.getSender());
+		User reciever=userRepository.findByUserAccount(payment.getReceiver());
 		if(sender==null) {
 		 return ResponseEntity.status(400).body("Fund sender not found"); 
 		}
@@ -63,14 +64,29 @@ public class FinanceController {
 		cashInTransaction.setDescription(payment.getDescription());
 		cashInTransaction.setTransactionTime(LocalDateTime.now());
 		if(paymentService.cashIn(cashInTransaction)==null) {
-			return ResponseEntity.status(400).body("Problem with fund transfer");
+			return ResponseEntity.status(500).body("Problem with fund transfer");
 		}
 		return ResponseEntity.ok().body(payment.getAmount()+""
-				+ "succesfully transfered to"+payment.getReceiver());	
+				+ " succesfully transfered to: "+payment.getReceiver());	
 		}
 
-	@GetMapping("/externaPay")
-	public  ResponseEntity<?> cashIn(){
-		return ResponseEntity.ok().body("Yupiii");
-	}
+	  @PostMapping("/externalPay")
+	   public  ResponseEntity<?> cashIn(@Valid @RequestBody ExternalPaymentDto payment){
+		  User reciever=userRepository.findByUserAccount(payment.getReciever());
+		  Transaction cashInTransaction=new Transaction();
+		  if(reciever==null) {
+				 return ResponseEntity.status(400).body("Fund receiver doen't exist"); 
+			}
+		  cashInTransaction.setAccountOwner(reciever);
+			cashInTransaction.setCashIn(payment.getAmount());
+			cashInTransaction.setCurrency("Frw");
+			cashInTransaction.setDescription(payment.getDescription());
+			cashInTransaction.setTransactionTime(LocalDateTime.now());
+			if(paymentService.cashIn(cashInTransaction)==null) {
+			  return ResponseEntity.status(500).body("Problem with fund transfer");
+			}
+			return ResponseEntity.ok().body(payment.getAmount()+","
+					+ " succesfully transfered to: "+payment.getReciever());
+			
+	   }
 }

@@ -13,6 +13,7 @@ public class PaymentDto {
 	 private String description;
 	 
 	 private String reference;
+	 
 
 	public String getSender() {
 		return sender;
