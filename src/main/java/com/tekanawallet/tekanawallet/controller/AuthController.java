@@ -1,6 +1,7 @@
 package com.tekanawallet.tekanawallet.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -104,7 +107,23 @@ public class AuthController {
 		}
 	  }
 	  
-	
+	  @RequestMapping(value="/user", method = RequestMethod.GET)
+	  // @GetMapping("/user")
+	    @ResponseBody
+	    public  ResponseEntity<?>  findUser(@RequestParam("id") String id) {
+	    	
+	    	UUID userId=UUID.fromString(id);
+	    	User u=userService.findById(userId).orElse(null);;
+	    	
+	    	if(u==null) {
+	    		return ResponseEntity.status(400).body("User not found");	
+	    	}
+	    	
+	    
+	    	UserDto userDto=userService.convertUserToDto(u);
+	    	return ResponseEntity.ok().body(userDto);
+	    	
+	    }
 	  
 	 
     @GetMapping("/users")
@@ -113,5 +132,6 @@ public class AuthController {
 	   return userService.findAllUsers();
    }
 	  
+   
 	  
 }

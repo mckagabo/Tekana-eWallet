@@ -61,7 +61,7 @@ public class SecurityConfig {
 				 .authorizeHttpRequests(auth->{
 					 auth.requestMatchers("/","/api/auth/signup").permitAll();
 					 auth.requestMatchers("/","/api/auth/signin").permitAll();
-					// auth.requestMatchers("/","/api/auth/users").permitAll();
+					// auth.requestMatchers("/","/api/auth/user").permitAll();
 					// auth.requestMatchers("/","/api/payments/externalpay").permitAll();
 					 auth.anyRequest().authenticated();
 				 }) 
