@@ -17,7 +17,7 @@ Given the scenario presented in the technical evaluations following are my strat
 
 
 
-**Running the application**
+**Running the application & API documentation**
 
 
 To run this application you need to edit the property file found at \tekana-wallet\src\main\resources\application.properties 
