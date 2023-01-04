@@ -22,6 +22,6 @@ Given the scenario presented in the technical evaluations following are my strat
 
 To run this application you need to edit the property file found at \tekana-wallet\src\main\resources\application.properties 
 by putting configurations matching to your database and run the spring boot application class  you can either use mysql or postgres
-
+The code containing account activation was pushed on another branch named accountActivation as it was not part of the technical assesment
 The following is the link to the api documentation of the application: https://documenter.getpostman.com/view/8533723/2s8Z6zyrFq
 
