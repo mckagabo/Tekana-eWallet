@@ -3,6 +3,7 @@ package com.tekanawallet.tekanawallet.registration.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +58,8 @@ this.passwordEncoder = passwordEncoder;
 		        user.setNames(userDto.getFirstName() + " " + userDto.getLastName());
 		        user.setEmail(userDto.getEmail());
 		        user.setGender(showGender(userDto.getGender()));
-		        user.setAccountStatus(false);
+		        user.setAccountStatus(true);
+		        user.setIsEnabled(false);
 		        user.setDob(dob);
 		        user.setUserAccount(userDto.getUserName());
 		        user.setRegistrationTime(LocalDateTime.now());
@@ -72,6 +74,7 @@ this.passwordEncoder = passwordEncoder;
 		        user.setBalance(saveBalance(registeredUser,startingBalance));
 		        return user;
 		} catch (Exception e) {
+			
 			e.getMessage();
 		}
 		return registeredUser;
@@ -149,20 +152,28 @@ this.passwordEncoder = passwordEncoder;
 			dto.setName(role.getName().toString());
 			return dto;
 		}).collect(Collectors.toList());
+		if(rol==null) {
+			List<RoleDto> jobs=new ArrayList<>();
+		 return jobs;	
+		}
 		return rol;
 	}
 	public List<TransactionDto> transformList(List<Transaction> transactions){
-		List<TransactionDto> trans=transactions.stream().map(transaction->{
-		   TransactionDto dto=new TransactionDto();
-		   dto.setId(transaction.getId());
-		   dto.setCashIn(transaction.getCashIn());
-		   dto.setCashOut(transaction.getCashOut());
-		   dto.setCurrency(transaction.getCurrency());
-		   dto.setDescription(transaction.getDescription());
-		   dto.setTransactionTime(transaction.getTransactionTime());
-		   return dto;
-		}).collect(Collectors.toList());
-		return trans;
+		List<TransactionDto> trans=new ArrayList<>();
+		if(transactions!=null)	{
+		 trans=	transactions.stream().map(transaction->{
+				   TransactionDto dto=new TransactionDto();
+				   dto.setId(transaction.getId());
+				   dto.setCashIn(transaction.getCashIn());
+				   dto.setCashOut(transaction.getCashOut());
+				   dto.setCurrency(transaction.getCurrency());
+				   dto.setDescription(transaction.getDescription());
+				   dto.setTransactionTime(transaction.getTransactionTime());
+				   return dto;
+				}).collect(Collectors.toList());
+		}
+	  
+	   return trans;
 	}
 	
 	private Role registerNewRole(ERoles newRole) {
@@ -188,6 +199,11 @@ this.passwordEncoder = passwordEncoder;
 	@Override
 	public Optional<User> findById(UUID id) {
 		return userRepository.findById(id);
+	}
+
+	@Override
+	public User updateUser(User user) {
+	  return userRepository.save(user);
 	}
 
 	

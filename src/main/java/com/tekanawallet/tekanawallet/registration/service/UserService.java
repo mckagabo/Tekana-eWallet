@@ -21,6 +21,8 @@ public interface UserService{
 	    List<UserDto> findAllUsers();
 
 		User saveUser(UserDto userDto, ERoles userRole);
+		
+		User updateUser(User user);
 	    
 	    Balance saveBalance(User user,long balance);
 	    

@@ -1,10 +1,13 @@
 package com.tekanawallet.tekanawallet.controller;
 
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,18 +25,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.tekanawallet.tekanawallet.config.JwtTokenUtil;
 import com.tekanawallet.tekanawallet.dto.JwtResponse;
 import com.tekanawallet.tekanawallet.dto.LoginDto;
 import com.tekanawallet.tekanawallet.dto.UserDto;
+import com.tekanawallet.tekanawallet.registration.event.OnRegistrationCompleteEvent;
 import com.tekanawallet.tekanawallet.registration.model.User;
+import com.tekanawallet.tekanawallet.registration.model.VerificationToken;
 import com.tekanawallet.tekanawallet.registration.repository.RoleRepository;
 import com.tekanawallet.tekanawallet.registration.repository.UserRepository;
+import com.tekanawallet.tekanawallet.registration.service.EmailVerificationService;
 import com.tekanawallet.tekanawallet.registration.service.UserDetailsImpl;
 import com.tekanawallet.tekanawallet.registration.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import tekanawallet.tekanawallet.enums.ERoles;
 
@@ -55,12 +66,18 @@ public class AuthController {
 
 	  @Autowired
 	  RoleRepository roleRepository;
+	  
+	  @Autowired
+	  EmailVerificationService verificationService;
 
 	  @Autowired
 	  PasswordEncoder encoder;
 
 	  @Autowired
 	  JwtTokenUtil jwtUtils;
+	  
+	  @Autowired
+	  ApplicationEventPublisher eventPublisher;
 	  
 	  @PostMapping("/signin")
 	  public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody LoginDto loginRequest) {
@@ -89,7 +106,8 @@ public class AuthController {
 	  
 	  @PostMapping("/signup")
 	  public ResponseEntity<?> registerUser(@Valid @RequestBody UserDto userDto){
-		   
+		
+	        String contextPath = "/api/auth";		 
 		  try {
 			  if (userRepository.existsByEmail(userDto.getEmail())) {
 			      return ResponseEntity.badRequest().body("Error: Email already exist!");
@@ -97,13 +115,16 @@ public class AuthController {
 			  if(userRepository.existsByUserAccount(userDto.getUserName())) {
 				 return ResponseEntity.badRequest().body("ERRROR: Username taken");
 			  }
-			 
+			  
 			  User user=userService.saveUser(userDto,ERoles.CUSTOMER);
+			
+			  eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,contextPath));
 			  UserDto userDtoResponse=userService.convertUserToDto(user);
 			  return ResponseEntity.ok().body(userDtoResponse);
 		
 		} catch (Exception e) {
-			return ResponseEntity.status(500).body("Sorry"+e.getMessage());
+			System.out.println("OOOOOOOH YAEAR"+e.getCause());
+			return ResponseEntity.status(500).body("Ikibazo:"+e.getMessage());
 		}
 	  }
 	  
@@ -113,7 +134,7 @@ public class AuthController {
 	    public  ResponseEntity<?>  findUser(@RequestParam("id") String id) {
 	    	
 	    	UUID userId=UUID.fromString(id);
-	    	User u=userService.findById(userId).orElse(null);;
+	    	User u=userService.findById(userId).orElse(null);
 	    	
 	    	if(u==null) {
 	    		return ResponseEntity.status(400).body("User not found");	
@@ -124,13 +145,33 @@ public class AuthController {
 	    	return ResponseEntity.ok().body(userDto);
 	    	
 	    }
-	  
+	   @GetMapping("/activation")
+	   public ResponseEntity<?>  activateAccount(WebRequest request, Model model, @RequestParam("token") String token) {
+		 VerificationToken verificationToken= verificationService.findByToken(token);
+		 if(verificationToken==null) {
+			 model.addAttribute("message", "Invalid token");
+			return ResponseEntity.status(400).body("Invalid token");
+		 }
+		 User user=verificationToken.getUser();
+		
+		 if(verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+			 model.addAttribute("message", "Token expired");
+			 return ResponseEntity.status(400).body("Token expired");
+		 }
+		 user.setIsEnabled(true); 
+		  userService.updateUser(user);
+		  verificationToken.setConfirmedAt(LocalDateTime.now());
+		  verificationToken.setToken(null);
+		 VerificationToken verified= verificationService.updateToken(verificationToken);
+		  return ResponseEntity.ok().body("Account succesfuly activated at:"+verified.getConfirmedAt());
+		  
+	   }
 	 
-    @GetMapping("/users")
-   @ResponseBody
-   public List<UserDto> allUsers(){
+       @GetMapping("/users")
+       @ResponseBody
+      public List<UserDto> allUsers(){
 	   return userService.findAllUsers();
-   }
+      }
 	  
    
 	  

@@ -31,11 +31,13 @@ public class UserDetailsImpl implements UserDetailsService{
 		        .map(role -> new SimpleGrantedAuthority(role.getName().name()))
 		        .collect(Collectors.toList());
 		
-
+		//boolean accountNonExpired = true;
+	    boolean credentialsNonExpired = true;
+	    boolean accountNonLocked = true;
 		//return new UserDetails(user.getEmail(), user.getPassword(), true, true, true, true, authorities);
 	   
-		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
-				authorities);
+		return 	new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
+				user.getIsEnabled(),user.getAccountStatus(),credentialsNonExpired, accountNonLocked, authorities);
 		
 		
                 

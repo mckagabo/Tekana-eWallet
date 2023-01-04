@@ -51,6 +51,9 @@ public class User {
 	@Column(name="account_status")
 	private Boolean accountStatus;
 	
+	@Column(name="enabled")
+	private Boolean isEnabled;
+	
 	@Column(name="registration_time",nullable=true)
 	private LocalDateTime registrationTime;
 	
@@ -176,6 +179,14 @@ public class User {
 
 	public void setGender(EGender gender) {
 		this.gender = gender;
+	}
+
+	public Boolean getIsEnabled() {
+		return isEnabled;
+	}
+
+	public void setIsEnabled(Boolean isEnabled) {
+		this.isEnabled = isEnabled;
 	}
 
 
