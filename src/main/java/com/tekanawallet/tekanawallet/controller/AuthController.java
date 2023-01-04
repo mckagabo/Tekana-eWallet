@@ -33,7 +33,9 @@ import org.springframework.web.server.ResponseStatusException;
 import com.tekanawallet.tekanawallet.config.JwtTokenUtil;
 import com.tekanawallet.tekanawallet.dto.JwtResponse;
 import com.tekanawallet.tekanawallet.dto.LoginDto;
+import com.tekanawallet.tekanawallet.dto.ReactivationDto;
 import com.tekanawallet.tekanawallet.dto.UserDto;
+import com.tekanawallet.tekanawallet.registration.event.OnReactivationRequest;
 import com.tekanawallet.tekanawallet.registration.event.OnRegistrationCompleteEvent;
 import com.tekanawallet.tekanawallet.registration.model.User;
 import com.tekanawallet.tekanawallet.registration.model.VerificationToken;
@@ -165,6 +167,22 @@ public class AuthController {
 		 VerificationToken verified= verificationService.updateToken(verificationToken);
 		  return ResponseEntity.ok().body("Account succesfuly activated at:"+verified.getConfirmedAt());
 		  
+	   }
+	   
+	   @PostMapping("/resendActivation")
+	   public ResponseEntity<?> resendActivationEmail(@Valid @RequestBody ReactivationDto emailDto){
+		   String email=emailDto.getEmail();
+		   User user=userService.findByEmail(email);
+		   String contextPath = "/api/auth";
+		   if(user==null) {
+			 return ResponseEntity.status(400).body("Account not registered");   
+		   }
+		   VerificationToken token=verificationService.findByUser(user);
+		   if(token.getToken()==null) {
+			   return ResponseEntity.status(400).body("The account is already activated");   
+		   }
+		   eventPublisher.publishEvent(new OnReactivationRequest(token,contextPath));
+		   return ResponseEntity.ok().body("Activation link resent");
 	   }
 	 
        @GetMapping("/users")

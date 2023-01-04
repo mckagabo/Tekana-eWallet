@@ -62,6 +62,7 @@ public class SecurityConfig {
 					 auth.requestMatchers("/","/api/auth/signup").permitAll();
 					 auth.requestMatchers("/","/api/auth/signin").permitAll();
 					 auth.requestMatchers("/","/api/auth/activation").permitAll();
+					 auth.requestMatchers("/","/api/auth/resendActivation").permitAll();
 					// auth.requestMatchers("/","/api/payments/externalpay").permitAll();
 					 auth.anyRequest().authenticated();
 				 }) 
