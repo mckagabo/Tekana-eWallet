@@ -13,6 +13,8 @@ import com.tekanawallet.tekanawallet.registration.model.Transaction;
 import com.tekanawallet.tekanawallet.registration.model.User;
 import com.tekanawallet.tekanawallet.registration.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class PaymentServiceImpl implements PaymentService{
 	
@@ -31,6 +33,7 @@ public class PaymentServiceImpl implements PaymentService{
 	
 
 	@Override
+	@Transactional
 	public Transaction cashIn(Transaction transaction) {
 		Transaction tansact=null;
 		try {
@@ -47,6 +50,7 @@ public class PaymentServiceImpl implements PaymentService{
 	}
 
 	@Override
+	@Transactional
 	public Transaction cashOut(Transaction transaction) {
 		Transaction transact=null;
 		long transactionCharges=0;

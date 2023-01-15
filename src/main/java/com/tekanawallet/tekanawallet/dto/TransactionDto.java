@@ -15,16 +15,17 @@ public class TransactionDto {
 	@Column
 	private String description;
 	
-	@Column 
+	
 	private String currency;
 	
-	@Column
+	
 	private LocalDateTime transactionTime;
 	
 
 	private String userAccount;
 	
 	
+	private String  internalReference;
 	
 	
 
@@ -116,6 +117,16 @@ public class TransactionDto {
 
 	public void setExternalReference(String externalReference) {
 		this.externalReference = externalReference;
+	}
+
+
+	public String getInternalReference() {
+		return internalReference;
+	}
+
+
+	public void setInternalReference(String internalReference) {
+		this.internalReference = internalReference;
 	}
 	
     

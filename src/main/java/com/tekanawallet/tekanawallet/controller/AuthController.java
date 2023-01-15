@@ -2,7 +2,10 @@ package com.tekanawallet.tekanawallet.controller;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -45,6 +48,7 @@ import com.tekanawallet.tekanawallet.registration.service.EmailVerificationServi
 import com.tekanawallet.tekanawallet.registration.service.UserDetailsImpl;
 import com.tekanawallet.tekanawallet.registration.service.UserService;
 
+import io.jsonwebtoken.impl.DefaultClaims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import tekanawallet.tekanawallet.enums.ERoles;
@@ -81,6 +85,23 @@ public class AuthController {
 	  @Autowired
 	  ApplicationEventPublisher eventPublisher;
 	  
+	  @GetMapping(value = "/refreshtoken")
+		public ResponseEntity<?> refreshtoken(HttpServletRequest request) throws Exception {
+			// From the HttpRequest get the claims
+			DefaultClaims claims = (io.jsonwebtoken.impl.DefaultClaims) request.getAttribute("claims");
+
+			Map<String, Object> expectedMap = getMapFromIoJsonwebtokenClaims(claims);
+			String token = jwtUtils.generateRefreshToken(expectedMap, expectedMap.get("sub").toString());
+			return ResponseEntity.ok(token);
+		}
+	  
+	  public Map<String, Object> getMapFromIoJsonwebtokenClaims(DefaultClaims claims) {
+			Map<String, Object> expectedMap = new HashMap<String, Object>();
+			for (Entry<String, Object> entry : claims.entrySet()) {
+				expectedMap.put(entry.getKey(), entry.getValue());
+			}
+			return expectedMap;
+		}
 	  @PostMapping("/signin")
 	  public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody LoginDto loginRequest) {
 		    try {

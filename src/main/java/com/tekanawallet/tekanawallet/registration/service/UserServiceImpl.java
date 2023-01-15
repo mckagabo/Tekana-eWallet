@@ -169,6 +169,8 @@ this.passwordEncoder = passwordEncoder;
 				   dto.setCurrency(transaction.getCurrency());
 				   dto.setDescription(transaction.getDescription());
 				   dto.setTransactionTime(transaction.getTransactionTime());
+				   dto.setInternalReference(transaction.getInternalReference());
+				   dto.setExternalReference(transaction.getExternalReference());
 				   return dto;
 				}).collect(Collectors.toList());
 		}

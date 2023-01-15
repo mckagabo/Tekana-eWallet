@@ -35,6 +35,9 @@ public class JwtTokenUtil implements Serializable {
 	
 	@Value("${jwt.jwtExpirationMs}")
 	 private int jwtExpirationMs;
+	
+	@Value("${jwt.jwtRefreshTokenExpirationMs}")
+	private int refreshExpirationDateInMs;
 
 	  @Value("${jwt.jwtCookieName}")
 	  private String jwtCookie;
@@ -60,7 +63,7 @@ public class JwtTokenUtil implements Serializable {
 	}
 
 	//check if the token has expired
-	private Boolean isTokenExpired(String token) {
+	public Boolean isTokenExpired(String token) {
 		final Date expiration = getExpirationDateFromToken(token);
 		return expiration.before(new Date());
 	}
@@ -75,7 +78,13 @@ public class JwtTokenUtil implements Serializable {
 		        .compact();
 		  }
 	
+	 public String generateRefreshToken(Map<String, Object> claims, String subject) {
 
+			return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+					.setExpiration(new Date(System.currentTimeMillis() + refreshExpirationDateInMs))
+					.signWith(SignatureAlgorithm.HS512, secret).compact();
+
+		}
 
 	//validate token
 	public Boolean validateToken(String token, UserDetails userDetails) {

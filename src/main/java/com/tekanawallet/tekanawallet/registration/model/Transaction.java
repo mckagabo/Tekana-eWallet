@@ -48,6 +48,9 @@ public class Transaction {
 	@Column(name="external_reference")
     private String externalReference;
 	
+	@Column(name="internal_reference")
+	private String internalReference;
+	
 	
 	
 
@@ -121,6 +124,14 @@ public class Transaction {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+
+	public String getInternalReference() {
+		return internalReference;
+	}
+
+	public void setInternalReference(String internalReference) {
+		this.internalReference = internalReference;
 	}
 	
 	
